@@ -7,3 +7,10 @@ export const login = (mobile, code) => {
     data: { mobile, code }
   })
 }
+
+export const timeBtnApi = (mobile) => {
+  return request({
+    url: `/v1_0/sms/codes/${mobile}`,
+    method: 'GET'
+  })
+}
