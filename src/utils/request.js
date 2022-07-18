@@ -16,7 +16,7 @@ request.interceptors.request.use(
   // config本次请求的匹配
   // 必须要返回出去
   (config) => {
-    console.log(config)
+    // console.log(config)
     // config添加token
     const token = store.state.user.token
     if (token) {
