@@ -10,19 +10,33 @@
       <div class="popupMain">
         <div class="my-channel">
           <van-cell title="我的频道">
-            <van-button size="small" round class="edit-btn"> 编辑 </van-button>
+            <van-button
+              @click="isEdit = !isEdit"
+              size="small"
+              round
+              class="edit-btn"
+            >
+              {{ isEdit ? '完成' : '编辑' }}
+            </van-button>
           </van-cell>
           <van-grid :border="false" gutter="10px">
             <van-grid-item
               :text="item.name"
-              v-for="item in myChannels"
+              v-for="(item, index) in myChannels"
               :key="item.id"
+              :class="{ 'active-channel': item.name === '推荐' }"
+              @click="onClickMyChannel(item, index)"
             >
-              <template #icon><van-icon name="close" /></template>
+              <template #icon>
+                <van-icon
+                  v-show="isEdit && item.name !== '推荐'"
+                  name="close"
+                />
+              </template>
             </van-grid-item>
           </van-grid>
         </div>
-        <div class="recommeng-channel">
+        <div class="recommend-channel">
           <van-cell title="推荐频道"> </van-cell>
           <van-grid :border="false" gutter="10px">
             <van-grid-item
@@ -30,6 +44,7 @@
               :key="item.id"
               :text="item.name"
               icon="plus"
+              @click="addMyChannel(item)"
             ></van-grid-item>
           </van-grid>
         </div>
@@ -46,7 +61,8 @@ export default {
   data() {
     return {
       isShow: true,
-      allChannels: []
+      allChannels: [],
+      isEdit: false
     }
   },
   created() {
@@ -76,6 +92,19 @@ export default {
       const { data } = await getAllChannelApi()
       this.allChannels = data.data.channels
       console.log(data)
+    },
+    onClickMyChannel(channel, index) {
+      if (this.isEdit && channel.name !== '推荐') {
+        this.$emit('del-mychannel', channel.id)
+      }
+      if (!this.isEdit) {
+        this.isShow = false
+        this.$emit('change-active', index)
+        console.log(index)
+      }
+    },
+    addMyChannel(myChannel) {
+      this.$emit('add-mychannel', { ...myChannel })
     }
   }
 }
@@ -120,12 +149,17 @@ export default {
     flex-direction: row;
 
     .van-grid-item__icon {
-      font-size: 0.5rem;
+      font-size: 0.35rem;
     }
 
     .van-grid-item__text {
       margin-top: 0;
     }
+  }
+}
+.active-channel {
+  :deep(.van-grid-item__text) {
+    color: red;
   }
 }
 </style>

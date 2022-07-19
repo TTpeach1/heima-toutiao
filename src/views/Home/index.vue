@@ -14,20 +14,37 @@
       </van-tab>
       <span class="iconfont icon-gengduo" @click="showPopup"></span>
     </van-tabs>
-    <EditChannelPopup ref="popup" :myChannels='mychannels'></EditChannelPopup>
+    <EditChannelPopup
+      @del-mychannel="delMychannel"
+      ref="popup"
+      :myChannels="mychannels"
+      @change-active="changeActive"
+      @add-mychannel="addMyChannel"
+    ></EditChannelPopup>
   </div>
 </template>
 
 <script>
-import { getMyChannelApi } from '@/api'
+import {
+  getMyChannelApi,
+  getMyChannelsByLocal,
+  setMyChannelsToLocal,
+  delMyChannelApi,
+  addMyChannelApi
+} from '@/api'
 import ArticleList from './component/ArticleList'
 import EditChannelPopup from './component/EditChannelPopup'
 export default {
   data() {
     return {
-      active: '',
+      active: 0,
       mychannels: [],
       isShow: false
+    }
+  },
+  computed: {
+    isLogin() {
+      return !!this.$store.state.user.token
     }
   },
   components: {
@@ -40,8 +57,19 @@ export default {
   methods: {
     async getMyChannels() {
       try {
-        const { data } = await getMyChannelApi()
-        this.mychannels = data.data.channels
+        if (!this.isLogin) {
+          const myChannels = getMyChannelsByLocal()
+          if (myChannels) {
+            this.mychannels = myChannels
+          } else {
+            const { data } = await getMyChannelApi()
+            this.mychannels = data.data.channels
+          }
+        } else {
+          const { data } = await getMyChannelApi()
+          this.mychannels = data.data.channels
+        }
+
         // console.log(this.mychannels)
       } catch (error) {
         this.$toast.fail('请重新获取频道列表')
@@ -49,6 +77,35 @@ export default {
     },
     showPopup() {
       this.$refs.popup.isShow = true
+    },
+    async delMychannel(id) {
+      this.mychannels = this.mychannels.filter((item) => item.id !== id)
+      if (!this.isLogin) {
+        setMyChannelsToLocal(this.mychannels)
+      } else {
+        try {
+          await delMyChannelApi(id)
+        } catch (error) {
+          return this.$toast.fail('删除用户失败')
+        }
+      }
+      this.$toast.fail('删除用户成功')
+    },
+    changeActive(active) {
+      this.active = active
+    },
+    async addMyChannel(myChannel) {
+      this.mychannels.push(myChannel)
+      if (!this.isLogin) {
+        setMyChannelsToLocal(this.mychannels)
+      } else {
+        try {
+          await addMyChannelApi(myChannel.id, myChannel.length)
+        } catch (error) {
+          return this.$toast.fail('添加用户失败')
+        }
+      }
+      this.$toast.fail('添加用户成功')
     }
   }
 }
