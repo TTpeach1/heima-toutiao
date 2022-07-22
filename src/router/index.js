@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // 引入路由
 import Login from '@/views/login'
+import Content from '@/views/content'
 
 Vue.use(VueRouter)
 
@@ -9,6 +10,11 @@ const routes = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/content',
+    name: 'content',
+    component: Content
   },
   {
     path: '/search',

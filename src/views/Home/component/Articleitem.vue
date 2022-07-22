@@ -1,16 +1,16 @@
 <template>
-  <div>
+  <div @click="toContent(articleInfo.art_id)">
     <!-- 渲染无图片 -->
     <van-cell
       v-if="articleInfo.cover.type === 0"
       :title="articleInfo.title"
-      :label="articleDesc"
+      :label="articleInfo.pubdate|timeFormat"
     />
     <!-- 渲染一张图片 -->
     <van-cell
       v-if="articleInfo.cover.type === 1"
       :title="articleInfo.title"
-      :label="articleDesc"
+      :label="articleInfo.pubdate|timeFormat"
     >
       <van-image width="3rem" height="2rem" :src="articleInfo.cover.images[0]">
       </van-image>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import dayjs from '@/utils/dayjs'
+// import dayjs from '@/utils/dayjs'
 export default {
   name: 'HeimaModileArticleitem',
 
@@ -47,15 +47,24 @@ export default {
       require: true
     }
   },
-  mounted() {},
-  computed: {
-    articleDesc() {
-      const art = this.articleInfo
-      const relativeTime = dayjs(art.pubdate).fromNow()
-      return `${art.aut_name} ${art.comm_count}评论 ${relativeTime}`
-    }
+  mounted() {
+    console.log(this.articleInfo)
   },
-  methods: {}
+  computed: {
+    // articleDesc() {
+    //   const art = this.articleInfo
+    //   const relativeTime = dayjs(art.pubdate).fromNow()
+    //   return `${art.aut_name} ${art.comm_count}评论 ${relativeTime}`
+    // }
+  },
+  methods: {
+    toContent(artId) {
+      this.$router.push({
+        name: 'content',
+        params: { id: artId }
+      })
+    }
+  }
 }
 </script>
 

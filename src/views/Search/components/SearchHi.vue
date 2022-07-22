@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <van-cell-group>
       <van-cell title="搜索历史">
         <template #default>
@@ -67,6 +67,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.main {
+  background-color: #f5f7f9;
+  height: 100vh;
+}
 .btns {
   button {
     border: 0;

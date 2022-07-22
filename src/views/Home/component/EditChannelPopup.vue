@@ -105,6 +105,9 @@ export default {
     },
     addMyChannel(myChannel) {
       this.$emit('add-mychannel', { ...myChannel })
+    },
+    toContent() {
+      this.$router.push('/content')
     }
   }
 }

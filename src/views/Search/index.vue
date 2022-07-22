@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <form action="/">
       <van-search
         v-model="keyWord"
@@ -19,6 +19,7 @@
       :is="componentName"
       :keyWord="keyWord"
       @getNew="getNewKey"
+      class="module"
     ></component>
   </div>
 </template>
@@ -86,9 +87,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.main {
+  position: relative;
+}
 .search {
+  position: fixed;
+  z-index: 99;
+  width: 100%;
+  top: 0;
+  left: 0;
   [role='button'] {
     color: #fff;
   }
 }
+.module {
+  margin-top: 120px;
+}
+// .search {
+//   [role='button'] {
+//     color: #fff;
+//   }
+// }
 </style>

@@ -2408,6 +2408,11 @@
   "resolved" "https://registry.npmmirror.com/commander/-/commander-8.3.0.tgz"
   "version" "8.3.0"
 
+"commander@^9.0.0":
+  "integrity" "sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw=="
+  "resolved" "https://registry.npmmirror.com/commander/-/commander-9.4.0.tgz"
+  "version" "9.4.0"
+
 "commondir@^1.0.1":
   "integrity" "sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg=="
   "resolved" "https://registry.npmmirror.com/commondir/-/commondir-1.0.1.tgz"
@@ -3646,6 +3651,11 @@
     "call-bind" "^1.0.2"
     "get-intrinsic" "^1.1.1"
 
+"github-markdown-css@^5.1.0":
+  "integrity" "sha512-QLtORwHHtUHhPMHu7i4GKfP6Vx5CWZn+NKQXe+cBhslY1HEt0CTEkP4d/vSROKV0iIJSpl4UtlQ16AD8C6lMug=="
+  "resolved" "https://registry.npmmirror.com/github-markdown-css/-/github-markdown-css-5.1.0.tgz"
+  "version" "5.1.0"
+
 "glob-parent@^5.1.2", "glob-parent@~5.1.2":
   "integrity" "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="
   "resolved" "https://registry.npmmirror.com/glob-parent/-/glob-parent-5.1.2.tgz"
@@ -3785,6 +3795,11 @@
   "integrity" "sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A=="
   "resolved" "https://registry.npmmirror.com/highlight.js/-/highlight.js-10.7.3.tgz"
   "version" "10.7.3"
+
+"highlight@^0.2.4":
+  "integrity" "sha512-TEcWU6BolpDYIaVD91KmaYe/kRZwOmQlLWZGO8DK+Cs555+7mawk2KUnF/dBwcLnrvlCDk/xC+BXfz7Zva+Jfg=="
+  "resolved" "https://registry.npmmirror.com/highlight/-/highlight-0.2.4.tgz"
+  "version" "0.2.4"
 
 "hosted-git-info@^2.1.4":
   "integrity" "sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw=="
@@ -6003,6 +6018,13 @@
   "integrity" "sha512-Vpfqwm4EnqGdlsBFNmHhxhElJYrdfcxPThu+ryKS5J8L/fhAwLazFZtq+S+TWZ9ANj2piSQLGj6NQg+lKPmxrw=="
   "resolved" "https://registry.npmmirror.com/shell-quote/-/shell-quote-1.7.3.tgz"
   "version" "1.7.3"
+
+"showdown@^2.1.0":
+  "integrity" "sha512-/6NVYu4U819R2pUIk79n67SYgJHWCce0a5xTP979WbNp0FL9MN1I1QK662IDU1b6JzKTvmhgI7T7JYIxBi3kMQ=="
+  "resolved" "https://registry.npmmirror.com/showdown/-/showdown-2.1.0.tgz"
+  "version" "2.1.0"
+  dependencies:
+    "commander" "^9.0.0"
 
 "side-channel@^1.0.4":
   "integrity" "sha512-q5XPytqFEIKHkGdiMIrY10mvLRvnQh42/+GoBlFW3b2LXLE2xxJpZFdm94we0BaoV3RwJyGqg5wS7epxTv0Zvw=="

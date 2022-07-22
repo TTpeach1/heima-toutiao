@@ -24,3 +24,31 @@ export const getUserInfoApi = () => {
     // }
   })
 }
+/**
+ *
+ * @param {*} id
+ * @returns 关注作者
+ */
+export const attentionApi = (id) => {
+  return request({
+    url: '/v1_0/user/followings',
+    method: 'POST',
+    data: {
+      target: id
+    }
+  })
+}
+/**
+ *
+ * @param {*} id
+ * @returns 取关作者
+ */
+export const noattentionApi = (id) => {
+  return request({
+    url: `/v1_0/user/followings/${id}`,
+    method: 'DELETE',
+    data: {
+      target: id
+    }
+  })
+}
