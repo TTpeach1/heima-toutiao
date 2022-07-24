@@ -21,6 +21,10 @@ const routes = [
     component: () => import('@/views/Search')
   },
   {
+    path: '/user',
+    component: () => import('@/views/User')
+  },
+  {
     path: '/',
     component: () => import('@/views/Layout'),
     redirect: '/ ',

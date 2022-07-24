@@ -52,3 +52,31 @@ export const noattentionApi = (id) => {
     }
   })
 }
+/**
+ *
+ * @param {*} name
+ * @param {*} gender 性别，0-男，1-女
+ * @param {*} birthday
+ * @param {*} realName
+ * @param {*} intro 个人介绍
+ * @returns 编辑用户个人资料
+ */
+export const compileUserApi = (name, gender, birthday, realName, intro) => {
+  return request({
+    url: '/v1_0/user/profile',
+    method: 'PATCH',
+    data: {
+      name,
+      gender,
+      birthday,
+      real_name: realName,
+      intro
+    }
+  })
+}
+export const getUserApi = () => {
+  return request({
+    url: '/v1_0/user/profile',
+    method: 'GET'
+  })
+}
