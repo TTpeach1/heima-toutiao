@@ -60,7 +60,9 @@
               <p>{{ item.content }}</p>
               <div class="text-btn">
                 <p>{{ item.pubdate | timeFormat }}</p>
-                <button>回复1</button>
+                <button @click="replyBtn(index)">
+                  回复{{ item.reply_count || 0 }}
+                </button>
               </div>
             </div>
           </div>
@@ -70,6 +72,86 @@
           </div>
         </div>
       </van-list>
+      <van-popup
+        v-model="replyShow"
+        position="bottom"
+        :style="{ height: '100%' }"
+      >
+        <van-nav-bar
+          title="暂无回复"
+          left-arrow
+          @click-left="replyShow = false"
+        />
+        <div class="box"></div>
+        <div class="comment">
+          <div class="comment-left">
+            <div class="pic">
+              <img :src="replyCommentList.aut_photo" alt="" />
+            </div>
+            <div class="text">
+              <p>{{ replyCommentList.aut_name }}</p>
+              <p>{{ replyCommentList.content }}</p>
+              <div class="text-btn">
+                <p>{{ replyCommentList.pubdate | timeFormat }}</p>
+                <button>回复{{ replyCommentList.reply_count || 0 }}</button>
+              </div>
+            </div>
+          </div>
+          <div class="comment-right">
+            <van-icon name="good-job-o" />
+            <span>赞</span>
+          </div>
+        </div>
+        <van-nav-bar class="van-nav-bar-two" left-text="全部回复" />
+        <div class="box"></div>
+        <div
+          class="comment"
+          v-for="(item, index) in this.replyCommentReplylist"
+          :key="index"
+        >
+          <div class="comment-left">
+            <div class="pic">
+              <img :src="item.aut_photo" alt="" />
+            </div>
+            <div class="text">
+              <p>{{ item.aut_name }}</p>
+              <p>{{ item.content }}</p>
+              <div class="text-btn">
+                <p>{{ item.pubdate | timeFormat }}</p>
+                <button @click="replyBtn(index)">
+                  回复{{ item.reply_count || 0 }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="comment-right">
+            <van-icon name="good-job-o" />
+            <span>1</span>
+          </div>
+        </div>
+        <button class="replyBtn" @click="writeReply">评论</button>
+        <van-popup
+          v-model="reShow"
+          position="bottom"
+          :style="{ height: '18%' }"
+        >
+          <div class="popup">
+            <van-field
+              v-model="replyMessage"
+              rows="2"
+              autosize
+              type="textarea"
+              maxlength="50"
+              placeholder="请输入留言"
+              show-word-limit
+            >
+            </van-field>
+            <div class="sendBtn">
+              <button @click="replyComBtn">发送</button>
+            </div>
+          </div>
+        </van-popup>
+      </van-popup>
     </div>
     <!-- 底部导航栏 -->
     <div class="foot">
@@ -81,6 +163,7 @@
       <van-icon @click="point" v-if="!isPoint" name="good-job-o" />
       <van-icon @click="point" v-if="isPoint" name="good-job" color="hotpink" />
       <van-icon name="share" @click="showShare = true" />
+      <!-- 评论弹出框 -->
       <van-popup v-model="show" position="bottom" :style="{ height: '18%' }">
         <div class="popup">
           <van-field
@@ -94,7 +177,7 @@
           >
           </van-field>
           <div class="sendBtn">
-            <button>发送</button>
+            <button @click="setComment">发送</button>
           </div>
         </div>
       </van-popup>
@@ -121,7 +204,8 @@ import {
   attentionApi,
   noattentionApi,
   setPointApi,
-  getPointApi
+  getPointApi,
+  setCommentApi
 } from '@/api'
 import storage from '@/utils/storage'
 
@@ -135,11 +219,17 @@ export default {
       page: 1, // list表单
       limit: 10, // list表单
       offset: '', // list表单
-      contentList: {}, // 内容列表
-      commentList: {}, // 评论列表
+      contentList: [], // 内容列表
+      commentList: [], // 评论列表
       // htmlText: '',
       show: false, // 评论输入弹出层显示
+      reShow: false, // 评论回复输入弹出层显示
+      replyShow: false, // 评论回复输入框显示
+      replyCommentList: {}, // 评论index
+      replyCommentReplylist: [], // 评论的回复列表
+      // replyIndex: '',
       message: '', // 评论输入弹出层内容
+      replyMessage: '', // 评论回复输入弹出层内容
       id: storage.get('id'), // 文章id
       userId: '', // 用户id
       showShare: false, // 分享弹出层显示
@@ -211,6 +301,9 @@ export default {
     // 评论弹出层
     write() {
       this.show = true
+    },
+    writeReply() {
+      this.reShow = true
     },
     // 请求评论数据
     async getComment() {
@@ -296,6 +389,52 @@ export default {
         const res = getPointApi(this.id)
         this.$toast.success('取消点赞成功')
         console.log(res)
+      }
+    },
+    // 发布评论
+    async setComment() {
+      try {
+        const id = String(this.id)
+        const res = await setCommentApi(id, this.message)
+        console.log(res)
+        this.getComment()
+        this.onLoad()
+        this.message = ''
+        this.show = false
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 回复按钮
+    async replyBtn(index) {
+      this.replyShow = true
+      this.replyIndex = index
+      this.replyCommentList = this.commentList[index]
+      console.log(this.replyIndex)
+      console.log(this.replyCommentList)
+      const res = await getCommentApi('c', this.replyCommentList.com_id, '', 10)
+      console.log(res)
+      this.replyCommentReplylist = res.data.data.results
+      // replyCommentReplylist
+    },
+    async replyComBtn() {
+      try {
+        const res = await setCommentApi(
+          this.replyCommentList.com_id,
+          this.replyMessage,
+          this.id
+        )
+        console.log(res)
+        this.replyMessage = ''
+        this.reShow = false
+        const res1 = await getCommentApi('c', this.replyCommentList.com_id, '', 10)
+        console.log(res)
+        this.replyCommentReplylist = res1.data.data.results
+        // this.replyShow = false
+        // this.getComment()
+        // this.replyBtn()
+      } catch (error) {
+        console.log(error)
       }
     }
   }
@@ -465,7 +604,76 @@ body {
     position: absolute;
     top: 0;
     right: 0;
-    font-size: 35px;
+    font-size: 30px;
+  }
+}
+//回复评论内容
+.van-popup--bottom {
+  // .van-nav-bar__content {
+  //   padding-bottom: 92px;
+  // }
+  .box {
+    height: 92px;
+  }
+  .comment {
+    display: flex;
+    position: relative;
+    padding: 25px 30px 25px;
+    .comment-left {
+      display: flex;
+      .pic {
+        width: 72px;
+        height: 72px;
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 36px;
+        }
+      }
+      .text {
+        p:nth-child(1) {
+          margin: 5px 30px;
+          font-size: 26px;
+        }
+        p:nth-child(2) {
+          font-size: 32px;
+          margin: 25px 30px;
+        }
+        .text-btn {
+          display: flex;
+          button {
+            width: 130px;
+            height: 48px;
+            font-size: 26px;
+            border-radius: 24px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+          }
+        }
+      }
+    }
+    .comment-right {
+      position: absolute;
+      top: 122px;
+      right: 30px;
+      font-size: 30px;
+    }
+  }
+  .van-nav-bar-two {
+    background-color: #fff;
+    :deep(.van-nav-bar__text) {
+      color: black;
+    }
+  }
+  .replyBtn {
+    height: 100px;
+    width: 80%;
+    position: fixed;
+    top: 1233px;
+    left: 75px;
+    border: 5px solid hotpink;
+    background-color: #fff;
+    border-radius: 50px;
   }
 }
 </style>
