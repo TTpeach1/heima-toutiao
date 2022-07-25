@@ -2,8 +2,21 @@
   <div>
     <van-nav-bar title="个人信息" left-arrow @click-left="toMy" />
     <!-- 头像 -->
-    <van-cell title="头像" is-link> </van-cell>
-    <img src="http://toutiao.itheima.net/images/user_head.jpg" alt="" />
+    <van-cell title="头像" is-link @click="$refs.file.click()" >
+      <van-image
+        width="40"
+        height="40"
+        round
+        :src="this.userMess.photo"
+      />
+    </van-cell>
+    <!-- <img :src="this.userMess.photo" alt="" /> -->
+    <!-- 图片input框 -->
+    <input type="file" ref="file" hidden accept=".png,.jpg" />
+    <!-- 图片弹出层 -->
+    <van-popup v-model="showPhoto">
+      <UpdatePhoto :photo="photo" @setPhoto='setPhoto'></UpdatePhoto>
+    </van-popup>
     <!-- 昵称 -->
     <van-cell
       title="昵称"
@@ -63,11 +76,18 @@
 
 <script>
 import { compileUserApi, getUserApi } from '@/api'
+import UpdatePhoto from './component/UpdatePhoto.vue'
+// 如何拿到用户选择的图片?
+// - 监听input的change事件
 export default {
   name: 'HeimaToutiaoIndex',
-
+  components: {
+    UpdatePhoto
+  },
   data() {
     return {
+      showPhoto: false,
+      photo: '',
       showName: false,
       showSex: false,
       showBar: false,
@@ -78,15 +98,32 @@ export default {
       userMess: {}, // 获取的个人信息
       message: '', // 名字
       sex: '男', // 性别
+      sexNum: '',
       time: '', // 生日
-      mobile: '', // 真实名字
       intro: '' // 个人介绍
     }
   },
   created() {
     this.getUser()
   },
-  mounted() {},
+  mounted() {
+    this.$refs.file.addEventListener('change', (e) => {
+      // e.target 触发事件的元素
+      // 图片的src能识别什么?
+      //  - 图片相对/绝对路径
+      //  - base64 DateUrl
+      //  - file,blob对象的url
+      const file = e.target.files[0]
+      // file = URL.createObjectURL(file) // 将file对象转换成图片可识别的url
+      const fr = new FileReader()
+      fr.readAsDataURL(file)
+
+      fr.onload = (e) => {
+        this.photo = e.target.result
+        this.showPhoto = true
+      }
+    })
+  },
 
   methods: {
     toMy() {
@@ -115,8 +152,16 @@ export default {
     // 提交信息
     async compileUser() {
       try {
+        if (this.sex === '男') {
+          this.sexNum = 0
+        } else {
+          this.sexNum = 1
+        }
         const res = await compileUserApi(
-
+          this.message,
+          this.sexNum,
+          this.time,
+          this.intro
         )
         console.log(res)
       } catch (error) {
@@ -144,6 +189,10 @@ export default {
       this.time = yy + '-' + mm + '-' + dd
       this.showBar = false
       this.compileUser()
+    },
+    setPhoto(val) {
+      this.userMess.photo = val
+      this.showPhoto = false
     }
   }
 }
